@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ playlist_name }} - Songs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background: #343a40; color: white; padding: 20px; }
+        .sidebar-header { text-align: center; margin-bottom: 20px; }
+        .sidebar-header img { 
+            width: 50px; 
+            height: auto; 
+            margin-bottom: 10px; 
+            object-fit: contain; 
+        }
+        .sidebar-header h2 { font-size: 1.5rem; font-weight: 600; }
+        .nav-item { 
+            padding: 10px; 
+            cursor: pointer; 
+            border-radius: 5px; 
+            margin-bottom: 5px; 
+            display: flex; 
+            align-items: center; 
+            transition: background 0.3s; 
+        }
+        .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
+        .nav-item.active { background: #dc3545; }
+        .nav-item i { margin-right: 10px; }
+        .content { flex: 1; padding: 20px; background: #f8f9fc; }
+        .card { border: none; border-radius: 0.35rem; box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1); }
+        .alert { border-radius: 0.35rem; }
+        body { font-family: 'Poppins', sans-serif; }
+        .table { background: #fff; border-radius: 0.35rem; overflow: hidden; }
+        .table th, .table td { vertical-align: middle; }
+        .table thead { background: #dc3545; color: white; }
+        .song-title { font-weight: 500; color: #343a40; }
+        .song-title a { text-decoration: none; color: #dc3545; }
+        .song-title a:hover { text-decoration: underline; }
+        .btn-play { background: #28a745; border: none; transition: background 0.3s; }
+        .btn-play:hover { background: #218838; }
+        .btn-play i { margin-right: 5px; }
+        .btn-danger { background-color: #dc3545; border-color: #dc3545; }
+        .action-buttons { display: flex; gap: 5px; }
+        .video-modal .modal-content { background: #fff; border-radius: 0.35rem; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .error-message { color: #dc3545; font-style: italic; text-align: center; }
+        .table tbody tr { transition: background 0.2s; }
+        .table tbody tr:hover { background: #f8f9fc; }
+        .modal-body { max-height: 400px; overflow-y: auto; }
+        .song-checkbox { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo">
+                <h2>Mood Beats</h2>
+            </div>
+            <div class="nav-item {% if active_page == 'loginhome' %}active{% endif %}" onclick="window.location.href='{{ url_for('loginhome') }}'">
+                <i class="fas fa-home"></i>
+                <span>Back to Home</span>
+            </div>
+            <div class="nav-item {% if active_page == 'dashboard' %}active{% endif %}" onclick="window.location.href='{{ url_for('dashboard') }}'">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item {% if active_page == 'favorites' %}active{% endif %}" onclick="window.location.href='{{ url_for('favorites') }}'">
+                <i class="fas fa-heart"></i>
+                <span>Favorites</span>
+            </div>
+            <div class="nav-item {% if active_page == 'playlists' %}active{% endif %}" onclick="window.location.href='{{ url_for('playlists') }}'">
+                <i class="fas fa-list"></i>
+                <span>My Playlists</span>
+            </div>
+            <div class="nav-item {% if active_page == 'history' %}active{% endif %}" onclick="window.location.href='{{ url_for('history') }}'">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </div>
+            <div class="nav-item {% if active_page == 'settings' %}active{% endif %}" onclick="window.location.href='{{ url_for('settings') }}'">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+            <div class="nav-item" onclick="return confirm('Are you sure you want to logout?') && (window.location.href='{{ url_for('logout') }}')">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+        <div class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <h2>{{ playlist_name }}</h2>
+            <a href="{{ url_for('playlists') }}" class="btn btn-secondary mb-3">Back to Playlists</a>
+            <button type="button" class="btn btn-danger mb-3" data-bs-toggle="modal" data-bs-target="#addSongModal" data-playlist-id="{{ playlist_id }}">
+                <i class="fas fa-plus"></i> Add Song
+            </button>
+            <div class="card">
+                <div class="card-body p-0">
+                    <table class="table table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Artist</th>
+                                <th>URL</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for song in songs %}
+                            <tr>
+                                <td class="song-title">{{ song.title }}</td>
+                                <td>{{ song.artist }}</td>
+                                <td><a href="{{ song.url }}" target="_blank">Listen</a></td>
+                                <td class="action-buttons">
+                                    <button class="btn btn-play btn-sm" data-bs-toggle="modal" data-bs-target="#videoModal" data-video-url="{{ song.url }}">
+                                        <i class="fas fa-play"></i> Play
+                                    </button>
+                                    <form action="{{ url_for('delete_playlist_song', playlist_id=playlist_id, song_id=song.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove {{ song.title }} from this playlist?');" class="d-inline">
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4">No songs in this playlist yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Song Modal -->
+    <div class="modal fade" id="addSongModal" tabindex="-1" aria-labelledby="addSongModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSongModalLabel">Add Songs to Playlist</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="add-song-form" method="POST" action="">
+                    <div class="modal-body">
+                        {% if all_songs %}
+                            {% for song in all_songs %}
+                                <div class="song-checkbox">
+                                    <input type="checkbox" 
+                                           name="song_ids" 
+                                           value="{{ song.id }}" 
+                                           id="song-{{ song.id }}"
+                                           {% if existing_song_ids is defined and song.id in existing_song_ids %}disabled checked{% endif %}>
+                                    <label for="song-{{ song.id }}">
+                                        {{ song.title }} - {{ song.artist }}
+                                        {% if existing_song_ids is defined and song.id in existing_song_ids %}(Already in playlist){% endif %}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No songs available. Add some songs first!</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" {% if not all_songs %}disabled{% endif %}>Add Songs</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div class="modal fade video-modal" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="videoModalLabel">Playing Song</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="video-container">
+                        <iframe id="youtubePlayer" src="" frameborder="0" allowfullscreen></iframe>
+                        <p id="errorMessage" class="error-message d-none">This URL is not a valid YouTube video link.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Function to extract YouTube video ID from URL
+        function getYouTubeVideoId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // JavaScript to handle YouTube video playback in the modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoModal = document.getElementById('videoModal');
+            const youtubePlayer = document.getElementById('youtubePlayer');
+            const errorMessage = document.getElementById('errorMessage');
+            const addSongModal = document.getElementById('addSongModal');
+            const form = document.getElementById('add-song-form');
+
+            // Video modal handling
+            videoModal.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+                const videoUrl = button.getAttribute('data-video-url');
+                const videoId = getYouTubeVideoId(videoUrl);
+
+                // Reset previous state
+                youtubePlayer.classList.remove('d-none');
+                errorMessage.classList.add('d-none');
+                youtubePlayer.src = '';
+
+                if (videoId) {
+                    // Embed YouTube video
+                    youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                } else {
+                    // Show error if not a valid YouTube URL
+                    youtubePlayer.classList.add('d-none');
+                    errorMessage.classList.remove('d-none');
+                }
+            });
+
+            videoModal.addEventListener('hidden.bs.modal', () => {
+                // Stop video by resetting the iframe src
+                youtubePlayer.src = '';
+                youtubePlayer.classList.remove('d-none');
+                errorMessage.classList.add('d-none');
+            });
+
+            // Add song modal handling
+            if (addSongModal) {
+                addSongModal.addEventListener('show.bs.modal', (event) => {
+                    const button = event.relatedTarget;
+                    const playlistId = button.getAttribute('data-playlist-id');
+                    if (form && playlistId) {
+                        form.action = `/add_songs_to_playlist/${playlistId}`;
+                    } else {
+                        console.error('Form or playlistId not found');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

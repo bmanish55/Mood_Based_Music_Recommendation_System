@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Beats</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <h2 data-aos="zoom-in" data-aos-duration="1200">Mood <span>Beats</span></h2>
+        </div>
+        <div class="link">
+            <ul>
+                <li data-aos="fade-up" data-aos-duration="1200" data-aos-delay="200"><a href="#" onclick="showPage('home-page')">Home</a></li>
+                <li data-aos="fade-up" data-aos-duration="1200" data-aos-delay="400"><a href="#" onclick="showPage('about-page')">About</a></li>
+                <li data-aos="fade-up" data-aos-duration="1200" data-aos-delay="1000"><a href="#" onclick="showPage('contact-page')">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Default Home Page Content -->
+        <div class="main" id="home-page">
+            <div class="img-term" data-aos="zoom-out-right" data-aos-duration="2500"><img class="men" src="{{ url_for('static', filename='img/rock-removebg-preview.png') }}" alt="main-img"></div>
+            <div class="main-detail">
+                <p data-aos="fade-left" data-aos-duration="1200" data-aos-delay="1200">Discover the Soundtrack of Your Emotions.</p>
+                <h1 data-aos="fade-right" data-aos-duration="1200" data-aos-delay="1400">Mood <span>Beats</span></h1>
+                <h4 data-aos="fade-in" data-aos-duration="1200" data-aos-delay="1600">Find the Perfect Tune for Your Vibe</h4>
+
+                <div class="btn">
+                    <button class="btn-1" data-aos="zoom-in-right" data-aos-duration="1200" data-aos-delay="1800" onclick="window.location.href='/home'">Lets Try</button>
+                    <button class="btn-2" data-aos="zoom-in-left" data-aos-duration="1200" data-aos-delay="1800" onclick="window.location.href='/login'">Join Us</button>
+                    <button class="btn-1" data-aos="zoom-in-left" data-aos-duration="1200" data-aos-delay="1800" onclick="window.location.href='/admin_login'">Admin</button>
+                </div>
+
+                <div class="social">
+                    <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                        <i class="bx bxl-github" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="2000"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                        <i class="bx bxl-instagram" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="2100"></i>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                        <i class="bx bxl-facebook" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="2000"></i>
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                        <i class="bx bxl-linkedin" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="2100"></i>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- About Page Content -->
+        <div class="about-page" id="about-page">
+            <div class="about-content">
+                <div class="about-text" data-aos="fade-right" data-aos-duration="1200">
+                    <h2 class="section-title">About <span>Mood Beats</span></h2>
+                    <p>Mood Beats is a revolutionary music platform that connects with your emotions to deliver the perfect soundtrack for every moment of your life.</p>
+                    <p>Whether you're feeling energetic, relaxed, or somewhere in between, Mood Beats has the perfect musical companion for your journey.</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                            <div class="feature-icon">
+                                <i class='bx bx-brain'></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Smart Mood Detection</h4>
+                                <p>Our technology detects your mood through various inputs to deliver the perfect music.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+                            <div class="feature-icon">
+                                <i class='bx bx-music'></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Vast Music Library</h4>
+                                <p>Access millions of tracks across all genres to match every possible mood.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="feature-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
+                            <div class="feature-icon">
+                                <i class='bx bx-trending-up'></i>
+                            </div>
+                            <div class="feature-text">
+                                <h4>Personalized Growth</h4>
+                                <p>Our system learns your preferences over time to deliver increasingly accurate recommendations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-image" data-aos="fade-left" data-aos-duration="1200">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="About Mood Beats">
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page Content -->
+        <div class="contact-page" id="contact-page">
+            <div class="contact-content">
+                
+                
+                <div class="contact-form" data-aos="fade-left" data-aos-duration="1200">
+                    <h2 class="section-title">Get In <span>Touch</span></h2>
+                    <p>Have questions, suggestions, or just want to say hello? We'd love to hear from you! Fill out the form below and our team will get back to you as soon as possible.</p>
+                    
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>    
+                </div>
+                <div class="contact-image" data-aos="fade-right" data-aos-duration="1200">
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class='bx bx-map'></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Location</h4>
+                                <p>123 Music Street, Melody City</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class='bx bx-phone'></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Phone</h4>
+                                <p>+1 234 567 890</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class='bx bx-envelope'></i>
+                            </div>
+                            <div class="info-text">
+                                <h4>Email</h4>
+                                <p>contact@moodbeats.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({offset: 0});
+       
+        
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('#content > div').forEach(div => {
+                div.style.display = 'none';
+            });
+            
+            // Show the selected page
+            document.getElementById(pageId).style.display = 'block';
+            
+            // If it's the home page, we might want it to display flex like original
+            if(pageId === 'home-page') {
+                document.getElementById(pageId).style.display = 'flex';
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+            
+            // Reinitialize AOS for new elements
+            setTimeout(() => {
+                AOS.refresh();
+            }, 300);
+        }
+        
+        // Show home page by default
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home-page');
+        });
+    </script>
+</body>
+</html>
